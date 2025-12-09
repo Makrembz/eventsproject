@@ -302,7 +302,7 @@ Access points:
 - Application: http://localhost:8089/events
 - Prometheus: http://localhost:9091
 - Grafana: http://localhost:3000 (admin/admin)
-- cAdvisor: http://localhost:8081
+- cAdvisor: http://localhost:8083
 '''
         }
         failure {
