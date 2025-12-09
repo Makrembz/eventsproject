@@ -15,7 +15,7 @@ pipeline {
         // Replace the placeholder below with your SonarQube server URL or set this value
         // in Jenkins global environment variables. Example: 'https://sonar.mycompany.com'
         SONAR_HOST_URL = 'http://localhost:9000'
-        
+
         // Nexus configuration
         NEXUS_URL = 'http://localhost:8081'
         NEXUS_REPOSITORY = 'maven-releases'
@@ -25,7 +25,7 @@ pipeline {
         // Docker configuration
         DOCKER_IMAGE = 'makrembz/eventsproject'
         DOCKER_TAG = "${BUILD_NUMBER}"
-        
+
         // Auto-incrementing version: 1.0.BUILD_NUMBER
         RELEASE_VERSION = "1.0.${BUILD_NUMBER}"
     }
@@ -69,7 +69,6 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-        stage('SonarQube Analysis') {
             steps {
                 // Bind a secret text credential (create a Secret Text credential in Jenkins with id 'SonarQube_jenkins')
                 withCredentials([string(credentialsId: 'SonarQube_jenkins', variable: 'SONAR_TOKEN')]) {
@@ -103,11 +102,11 @@ CE_STATUS=""
 while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
     ATTEMPT=$((ATTEMPT + 1))
     CE_JSON=$(curl -s -u "${SONAR_TOKEN}:" "${SONAR_HOST}/api/ce/task?id=${TASK_ID}")
-    
+
     # Extract status using grep and cut (no backslashes needed)
     CE_STATUS=$(echo "$CE_JSON" | grep -o '"status":"[^"]*"' | head -n1 | cut -d: -f2 | tr -d '"')
     echo "CE status (attempt ${ATTEMPT}/${MAX_ATTEMPTS}): ${CE_STATUS}"
-    
+
     if [ "${CE_STATUS}" = "SUCCESS" ]; then
         break
     fi
@@ -141,13 +140,13 @@ echo "Quality gate status: ${QG_STATUS}"
 if [ "${QG_STATUS}" != "OK" ]; then
     echo "Quality Gate did not pass: ${QG_STATUS}"
     echo "$QG_JSON"
-    
+
     # Get detailed issues information
     echo ""
     echo "=== Fetching detailed issues ==="
     ISSUES_JSON=$(curl -s -u "${SONAR_TOKEN}:" "${SONAR_HOST}/api/issues/search?componentKeys=tn.esprit:eventsProject&resolved=false&ps=20")
     echo "$ISSUES_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); [print(f'- {i.get(\"component\",\"?\").split(\":\")[-1]}:{i.get(\"line\",\"?\")} - {i.get(\"message\",\"?\")}') for i in d.get('issues',[])]" 2>/dev/null || echo "$ISSUES_JSON"
-    
+
     exit 1
 fi
 echo "Quality Gate passed!"
