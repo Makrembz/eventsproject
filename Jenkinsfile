@@ -21,7 +21,7 @@ pipeline {
         NEXUS_REPOSITORY = 'maven-releases'
         NEXUS_USER = 'admin'
         NEXUS_PASS = 'admin'
-        
+
         // Docker configuration
         DOCKER_IMAGE = 'makrembz/eventsproject'
         DOCKER_TAG = "${BUILD_NUMBER}"
@@ -43,7 +43,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Makrembz/eventsproject.git'
+                git branch: 'master', url: 'https://github.com/Makrembz/eventsproject.git'
             }
         }
 
