@@ -43,7 +43,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Makrembz/projet-devops.git'
+                git branch: 'main', url: 'https://github.com/Makrembz/eventsproject.git'
             }
         }
 
